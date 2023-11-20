@@ -191,8 +191,8 @@ function getTotalPercentage(files: File[]): number | null {
   let covered = 0
   if (files.length !== 0) {
     for (const file of files) {
-      missed += file.overall.missed
-      covered += file.overall.covered
+      missed += file.changed.missed
+      covered += file.changed.covered
     }
     return parseFloat(((covered / (covered + missed)) * 100).toFixed(2))
   } else {
