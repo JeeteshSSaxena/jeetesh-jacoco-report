@@ -267,7 +267,7 @@ function getProjectCoverage(reports, changedFiles) {
         .map(module => module.changed.covered)
         .reduce(sumReducer, 0.0);
     const projectCoverage = getOverallProjectCoverage(reports);
-    const totalPercentage = getTotalPercentage(totalFiles);
+    const totalPercentage = getTotalLinePercentage(totalFiles);
     return {
         modules: moduleCoverages,
         isMultiModule: reports.length > 1 || modules.length > 1,
@@ -394,6 +394,24 @@ function getTotalPercentage(files) {
         return null;
     }
 }
+
+function getTotalLinePercentage(files) {
+    let missed = 0;
+    let covered = 0;
+    if (files.length !== 0) {
+        for (const file of files) {
+            file.lines.forEach(line => {
+            missed += line.instruction.missed;
+            covered += line.instruction.covered
+            });
+        }
+        return parseFloat(((covered / (covered + missed)) * 100).toFixed(2));
+    }
+    else {
+        return null;
+    }
+}
+	
 function getModuleCoverage(report) {
     const counters = report['counter'];
     return getDetailedCoverage(counters, 'INSTRUCTION');
